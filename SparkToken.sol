@@ -60,11 +60,11 @@ contract SparkToken is ERC20Upgradeable, ERC20PausableUpgradeable, OwnableUpgrad
         emit MaxTransferLimitUpdated(Limit);
     }
 
-    function withdrawFees(address to) external onlyOwner {
+    function withdrawFees(address to) external onlyOwner { // can directly send tokens to owner without using 'to'
         uint256 fees = transcationFees;
-        transcationFees = 0; //reset 0 balance before transferring
-        _transfer(address(this), to, transcationFees);
-        emit FeesWithdrawn(to, fees);
+        transcationFees = 0;
+        _transfer(address(this), to, fees); // instead of 'to' - owner()
+        emit FeesWithdrawn(to, fees);// instead of 'to' - owner()
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 amount)
@@ -79,6 +79,7 @@ contract SparkToken is ERC20Upgradeable, ERC20PausableUpgradeable, OwnableUpgrad
     }
 
     function _transfer(address from, address to, uint256 amount)internal override{
+        
         uint256 transactionfee = (amount * 2) / 100;
         uint256 remainingamount = amount - transactionfee;
 
